@@ -41,7 +41,9 @@ keeping the whole project in sub directories of an website to keep entrypoint co
 
 ## copyright
 **openwebrx** by HA7ILM [AGPL-3.0 License]
+
 **waterfall-x64** as part of tools from OE5DXL  [GPL-2.0+]
+
 other tools, scrips developed for this project are published under [GNU GPLv3]
 
 ## TODO:
