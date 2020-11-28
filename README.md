@@ -2,6 +2,7 @@
 buffering SDR data for studying spectrum and searching for QRM 
 
 **Example** https://websdr.iks.tugraz.at/sdrbuffer/
+
 ![Screenshot](screenshot/screenshot1.png)
 
 consists out of following components:
