@@ -1,0 +1,2 @@
+0 * * * * rccw /opt/save/cleanup.sh                                                                                                  
+*/5 * * * * rccw /opt/save/waterfall.sh 2m  

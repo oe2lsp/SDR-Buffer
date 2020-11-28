@@ -1,0 +1,49 @@
+body {
+  background-color: #222222;
+  font-family: Helvetica;
+  color: white;
+}
+a {
+  color: #aaaaff;
+}
+a:visited {
+  color: #ff55ff;	
+}
+h1{
+  color: #ffffff; 
+}
+#waterfall {
+  /*width: 1650px;*/
+}
+#waterfall img {
+  float: right;
+  display: block;
+  width: 95%;
+  height: 3px;
+}
+#waterfall div {
+  float: left;
+  border-top: 1px solid #888;
+  width: 5%;
+}
+#waterfallbig {
+  position: fixed;
+  right: 0%;
+  width: 95%;
+  border: 3px solid #888;
+  visibility: hidden;
+}
+#waterfallbig img {
+  width: 100%;
+}
+.cursorsmall {
+  font-size: 10px;
+}
+#cursor {
+  background-color:rgba(22, 22, 22, 0.8);
+}
+.big {
+  font-weight: bold;
+  size: 14px;
+}
+
