@@ -1,5 +1,7 @@
 # SDR-Buffer	
+Simple web based solution for
 buffering SDR data for studying spectrum and searching for QRM 
+
 
 **Example** https://websdr.iks.tugraz.at/sdrbuffer/
 
@@ -16,8 +18,8 @@ consists out of following components:
 	- starting and stopping openwebrx for replay
 	- symlinks to waterfall data for each band
 - openwebrx 
- (patched so that it listen to bash parameters instead of static config file)
- - reverse proxy as entry point  (nginx)
+ (patched so that it listens to bash parameters instead of static config file)
+- reverse proxy as entry point  (nginx)
 	
 the binary files and scripts are located in /opt/save
 
@@ -55,3 +57,4 @@ other tools, scrips developed for this project are published under [GNU GPLv3]
 - migrate openwebrx to new version (maby using rtl_tcp interface) or own owrx connector???
 
 
+**push requests welcome**
