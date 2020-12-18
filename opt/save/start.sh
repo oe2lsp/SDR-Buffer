@@ -10,6 +10,6 @@
 #
 
 
-parent=/media/dump1/2m
+parent=/var/www/html/2m
 
-nc 127.0.0.1 9950 | csdr convert_f_u8 | ./record_buffer2 -o $parent
+nc 127.0.0.1 9950 | csdr convert_f_u8 | ./record_buffer -o $parent

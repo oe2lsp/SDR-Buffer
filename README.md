@@ -8,6 +8,10 @@ buffering SDR data for studying spectrum and searching for QRM
 ![Screenshot](screenshot/screenshot1.png)
 
 consists out of following components:
+
+
+![block-diagram](screenshot/sdr-buffer.svg)
+
 - start script
 	(record_buffer2)
 - cronjobs

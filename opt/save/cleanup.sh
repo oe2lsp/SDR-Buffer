@@ -8,7 +8,7 @@
 #
 
 
-dir2m="/media/dump1/2m"
+dir2m="/www/var/html/2m"
 #2160 2 tage
 
 #tree -fitra --noreport -L 2  $parent | tail -n+2160 | xargs -I '{}' rm {}
@@ -27,10 +27,10 @@ function clean_old {
 		exit
 	fi
 	#find . -type f -mmin +1440 | xargs -I '{}' rm -r  {} 
-	#find . -mindepth 1 -maxdepth 1 -mmin +$delay | xargs -I '{}' rm -r  {} 
+	find . -mindepth 1 -maxdepth 1 -mmin +$delay | xargs -I '{}' rm -r  {} 
 	find . -mindepth 1 -maxdepth 1 -mmin +$delay  
 }
 
-keep=$(echo "60*24*10" | bc)
+keep=$(echo "60*24*14" | bc)
 clean_old $dir2m $keep
 
