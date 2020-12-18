@@ -10,7 +10,7 @@ buffering SDR data for studying spectrum and searching for QRM
 consists out of following components:
 
 
-![block-diagram](screenshot/sdr-buffer.svg | width=100%)
+![block-diagram](screenshot/sdr-buffer.svg)
 
 - start script
 	(record_buffer2)
