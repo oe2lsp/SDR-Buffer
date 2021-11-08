@@ -12,38 +12,52 @@ a:visited {
 h1{
   color: #ffffff; 
 }
+.minuteline{
+  margin:0;
+  position: absolute;
+  float: left;
+  border-top: 1px solid #888;
+  width: 5%;
+}
+#test {
+  float: left;
+}
 #waterfall {
-  /*width: 1650px;*/
+  width: 99%;
+  position: absolute;
 }
 #waterfall img {
   float: right;
   display: block;
   width: 95%;
-  height: 3px;
-}
-#waterfall div {
-  float: left;
-  border-top: 1px solid #888;
-  width: 5%;
+  /*height: 3px;*/
+  z-index: 99;
 }
 #waterfallbig {
   position: fixed;
-  right: 0%;
+  right: 0.5%;
   width: 95%;
   border: 3px solid #888;
   visibility: hidden;
+  z-index: 999;
 }
 #waterfallbig img {
   width: 100%;
+  z-index: 999;
 }
 .cursorsmall {
   font-size: 10px;
 }
 #cursor {
   background-color:rgba(22, 22, 22, 0.8);
+  z-index:1000;
 }
 .big {
   font-weight: bold;
   size: 14px;
 }
-
+#footerfall {
+  float: left;
+  text-align: center;
+  width: 100%;
+}

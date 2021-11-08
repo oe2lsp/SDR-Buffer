@@ -45,7 +45,7 @@ parser.add_argument("-ts", "--timestamp", type=str,
 parser.add_argument("-p", "--port", type=int,
                 help="4595")
 parser.add_argument("-b", "--band", type=str,
-                help="2m")
+                help="80m")
 parser.add_argument("-s", "--samplingrate", type=int,
                 help="2400000")
 parser.add_argument("-c", "--centerfreq", type=int,
@@ -132,7 +132,6 @@ Note: if you experience audio underruns while CPU usage is 100%, you can:
 
 # >> RTL-SDR via rtl_sdr
 #start_rtl_command="rtl_sdr -s {samp_rate} -f {center_freq} -p {ppm} -g {rf_gain} -".format(rf_gain=rf_gain, center_freq=center_freq, samp_rate=samp_rate, ppm=ppm)
-#day="/media/dump1/2m/20201110/1300"
 #start_rtl_command="cat "+day+" | csdr flowcontrol {sr} 20 ".format(sr=samp_rate*2*1.05)
 start_rtl_command="/opt/save/read.sh "+band+" "+day+" "+timestamp+" | csdr_old flowcontrol {sr} 20 ".format(sr=samp_rate*2*1.05)
 

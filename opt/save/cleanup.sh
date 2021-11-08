@@ -8,8 +8,7 @@
 #
 
 
-dir2m="/www/var/html/2m"
-#2160 2 tage
+dir80m="/opt/save/www/80m"
 
 #tree -fitra --noreport -L 2  $parent | tail -n+2160 | xargs -I '{}' rm {}
 #| xargs -I '{}' rm $parent/{}
@@ -32,5 +31,5 @@ function clean_old {
 }
 
 keep=$(echo "60*24*14" | bc)
-clean_old $dir2m $keep
+clean_old $dir80m $keep
 

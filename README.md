@@ -13,9 +13,11 @@ consists out of following components:
 ![block-diagram](screenshot/sdr-buffer.svg)
 
 - start script
-	(record_buffer2)
+ 	- start<band>.sh with loop.sh to be more robust  
+	  record_buffer    	
+	- watchdog.sh needs to be started seperately if required
 - cronjobs
-	- create waterfall (waterfall-x64)
+	- create waterfall (waterfall3)
 	- cleanup
 - web front end
 	- displaying available data
@@ -27,23 +29,31 @@ consists out of following components:
 	
 the binary files and scripts are located in /opt/save
 
-## record_buffer2
+## record_buffer
 (buffering data to disk, each minute one file)
 simple C program 
 for help use parameter 
 > `--help` 
 > 
 input is stdin/pipe
+watchdog creates file and keeps timestamp up to date to detect failures
 
-**building** record buffer2: 		
-> gcc record_buffer.c -o record_buffer2
+**building** record buffer: 		
+> gcc record_buffer.c -o record_buffer
+
+## watchdog.sh
+watches for timestamp of file and kills pipe chain if needed
+
+## downsample
+based on waterfall tool from oe5dxl, will be published here:
+https://github.com/oe5hpm/dxlAPRS 
 
 ## waterfall-x64
 based on waterfall tool from oe5dxl, will be published here:
 https://github.com/oe5hpm/dxlAPRS 
 
 ## web front end
-simple php7 web page, also controlling the sessions of openwebrx and killing ghost sessions after 20min
+simple php7 web page, also controlling the sessions of openwebrx and killing ghost sessions after 20min (/opt/save/www)
 
 ## reverse proxy
 keeping the whole project in sub directories of an website to keep entrypoint compact (or to adapt to given limitations)
@@ -52,13 +62,24 @@ keeping the whole project in sub directories of an website to keep entrypoint co
 ## copyright
 **openwebrx** by HA7ILM [AGPL-3.0 License]
 
-**waterfall-x64** as part of tools from OE5DXL  [GPL-2.0+]
+**waterfall3, downsample** as part of tools from OE5DXL  [GPL-2.0+]
 
 other tools, scrips developed for this project are published under [GNU GPLv3]
+
+## geting started
+several files needs to be adopted for each band  
+look for "80m" as reference
+ 
+- opt/save/start80m.sh
+- opt/save/watchdog.sh
+- opt/save/www/index.php
+- opt/save/www/function.php
+- opt/save/start.sh
+- opt/save/cleanup.sh
+- crontab
 
 ## TODO:
 - documentation of used ports
 - migrate openwebrx to new version (maby using rtl_tcp interface) or own owrx connector???
-
 
 **push requests welcome**

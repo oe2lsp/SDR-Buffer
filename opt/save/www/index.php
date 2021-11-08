@@ -1,39 +1,10 @@
 <?
 require('function.php'); 
-
-function listband($band,$day_input) {  
-  $days= scandir($band);
-  $list= "";
-  printf("<h2>".$band."</h2>\n");
-
-
-  for ($i=2; $i<count($days); $i++) {
-    printf(" <a href='?b=".$band."&d=".$days[$i]."'>".$days[$i]."</a>"); 
-    //printf('%%%%'.$day_input."____".$days[$i] );
-    if ( $day_input == $days[$i] ) {
-      $list= $days[$i];
-    }
-  }
-  return $list;
-}
-
-function waterfall($band,$day) {
-
-  $imagepath= $band."/".$day."/out/";
-  $images= scandir($imagepath);
-  //printf("###".$imagepath."---".$images);
-  if ($images) {
-    //printf("###".$imagepath);
-    for ($i=2; $i<count($images); $i++) {
-      if (substr($images[$i],2,2) == "00" ) {
-        printf("<div>".substr($images[$i],0,2).":".substr($images[$i],2,2)."</div>");
-      }
-      printf("<a onclick='run(\"".$band."\",\"".$day."\",\"".$images[$i]."\")' touchstart='javascript:bigWaterfall(\"".$band."\",\"".$day."\",\"".$images[$i]."\");' touchmove='javascript:bigWaterfall(\"".$band."\",\"".$day."\",\"".$images[$i]."\");' onmousemove='javascript:bigWaterfall(\"".$band."\",\"".$day."\",\"".$images[$i]."\");' onmouseover='bigWaterfall(\"".$band."\",\"".$day."\",\"".$images[$i]."\")'><img src='".$imagepath.$images[$i]."' id='".$images[$i]."'></a>\n");
-
-    }
-  }
-
-}
+# vertical position <p> for hour marking
+# get position from mouse on image
+#     calc data based on minutes.txt
+#     touch support
+#     click -> start websdr
 
 
 $selected_day= addslashes($_GET['d']);
@@ -44,57 +15,67 @@ if ($b) {
   $band= $b['band'];
   $center_freq= $b['center_freq'];
   $bandwidth= $b['bandwidth'];
+  $footer= $b['footer'];
 }
 
 ?>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css">
+<?
+  echo ("<link rel=\"stylesheet\" href=\"style.css?".rand(1000,9999)."\">");
+?>      
     <meta charset="UTF-8">
     <script>
 <?
+
 printf("bw = ".$bandwidth."\n");
 printf("center = ".$center_freq."\n");
+printf("band = '".$band."'\n");
+printf("day = '".$selected_day."'\n");
 ?>      var controller;
       var signal;
+
       runPrepare();
 
-      function bigWaterfall(band, day, dtime) {
+      function bigWaterfall(e) {
         var chk= document.getElementById("chk_zoom");
         var wf=document.getElementById("waterfallbig");
-        if (chk.checked) {
-          wf.innerHTML="<img src='"+band+"/"+day+"/out_big/"+dtime+"'>"
+        img = document.getElementById('waterfallimg');
+	
+        img = document.getElementById("waterfallimg");
+        pos_x = event.offsetX?(event.offsetX):e.pageX-img.offsetLeft;
+        pos_y = event.offsetY?(event.offsetY):e.pageY+img.offsetTop;
 
+        a=getMinutes(pos_y);
+        qrg=getQRG(pos_x)
+        ptext=a+"<span class='cursorsmall'>UTC</span> "+qrg+"<span class='cursorsmall'>MHz</span>";
+        cursor(pos_x,pos_y-40,ptext)
+	
+        if (chk.checked) {
+          wf.innerHTML="<img src='"+band+"/"+day+"/out_big/"+a+".png'>"
           wf.style.visibility="visible" 
         }
         else {
           wf.style.visibility="hidden";
         }
-        img = document.getElementById(dtime);
-        pos_x = event.offsetX?(event.offsetX):event.pageX;//-img.offsetLeft;
-        pos_y = event.offsetY?(event.offsetY):event.pageY;//-img.offsetTop;
-        pos_y = img.offsetTop;
-        a=dtime.split(".")
-        qrg=getQRG(dtime,pos_x)
-        ptext=a[0]+"<span class='cursorsmall'>LT</span> "+qrg+"<span class='cursorsmall'>MHz</span>";
-        cursor(pos_x-30,pos_y-40,ptext)
-        /*if (typeof profileMetadata[pos_x] !== 'undefined')
-        {
-          document.getElementById("profile-marker").style.visibility = "visible";
-          document.getElementById("profile-marker").style.left = pos_x-1.5+"px";
-          deleteProfileMpos();
-          rfPoint(profileMetadata[pos_x].lat, profileMetadata[pos_x].lon);
-          document.getElementById('profile-free').innerHTML = "Free space to ground: " + profileMetadata[pos_x].free + "m &nbsp;&nbsp; Radius of 1st order Fresnel zone: " + profileMetadata[pos_x].fresnel + "m" ;
-        }*/
+
       }
-      function getQRG(id,x) {
-        img = document.getElementById(id);
+      function getQRG(x) {
+        img = document.getElementById('waterfallimg');
         rel = bw/img.width*(x)    
         qrg = center-bw/2+rel
         qrg=Math.round(qrg*1000)/1000	 
         return qrg	         
-      }	      
+      }	     
+      function getMinutes(y) {    
+        y=Math.floor(y)
+        img = document.getElementById('waterfallimg');
+        minid = Math.floor(y/3);
+        minmouse = minutes[minid];
+        minmouse = minmouse.toString().padStart(4, '0')
+        return minmouse;
+      }
       function cursor(x,y,text) { 
         pointer = document.getElementById("cursor");
         pointer.style.position="absolute"
@@ -110,15 +91,15 @@ printf("center = ".$center_freq."\n");
           });
         });
 		 
-		 //	 .then(users => console.log(users))
-         // .then(users => console.log(users));
       }       
       function runPrepare() {
         controller = new AbortController();
         signal = controller.signal;
       }
       function runAbort() {
-        controller.abort();
+        if ( typeof controller.abort == 'function' ) {
+          controller.abort();
+        }
       }	       
       async function* makeTextFileLineIterator(fileURL) {
         const utf8Decoder = new TextDecoder('utf-8');
@@ -153,22 +134,30 @@ printf("center = ".$center_freq."\n");
       }
 
       
-      async function run(band,day,dtime) {
-        dtime=dtime.split('.')
+      async function run(e) {
+	      
+        img = document.getElementById('waterfallimg');
+        pos_y = event.offsetY?(event.offsetY):event.pageY-img.offsetTop;
+        rect = e.target.getBoundingClientRect();
+        pos_x = e.clientX - rect.left; //x position within the element.
+        pos_y = e.clientY - rect.top;
+        dtime=getMinutes(pos_y)
+	      
         runAbort();
         runPrepare();  
-        for await (let line of makeTextFileLineIterator('owx.php?d='+day+'&t='+dtime[0]+'&b='+band)) {
+        for await (let line of makeTextFileLineIterator('owx.php?d='+day+'&t='+dtime+'&b='+band)) {
           param = line.includes('session:') 
           if (param) {
-            test = line.split('session:') 
-            full = test.includes('full')      
+            session_number = line.split('session:') 
+            full = session_number.includes('full')      
             if (full) {
               alert("All slots full please try again later")  
               return;
             }     
             console.log(line);
-            var win = window.open('/'+test[1], '_blank');
-            win.focus();
+            session_path='/'+session_number[1]
+            var win = window.open(session_path, '_blank')
+            win.focus()
           }   
         }
       }
@@ -181,13 +170,15 @@ printf("center = ".$center_freq."\n");
     <a href="?n=0"><h1>SDR-Buffer</h1></a> 
 <?
 
-
 if (strlen($band) > 1) {
   $day= listband($band,$selected_day);
+} else if ( $b != null ) {
+  //shortwave band, nothing to do here
 } else {
-  $day= listband("2m",$selected_day);
-  $day= listband("70cm",$selected_day);
+  /////ADD BANDS HERE ///////////    
+  $day= listband("80m",$selected_day);
 }
+
 
 if ( strlen($selected_day) <3) {
   printf("<br><span class='big'>Select from availables dates above!</span><br>");
@@ -196,13 +187,21 @@ if ( strlen($selected_day) <3) {
 }
 ?>
     <div id="waterfallbig"></div>
-    <div id="cursor"></div>
     <div id="waterfall">
+    <div id="cursor"></div>
 <?
 if ($band && $day) {
-  //printf("<br>selected:".$list." &nbsp; load zoom<input type=\"checkbox\" id='chk_zoom' name='chk_zoom' /><br>");
   waterfall($band,$day);
 }
+?>
+    </div>
+    <div id="footerfall">
+<?
+if (strlen($band)>1) {
+  printf("<br>".$footer."<br>");
+
+}
+
 ?>
     </div>
   </body>

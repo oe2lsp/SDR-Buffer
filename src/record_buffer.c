@@ -6,28 +6,31 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/select.h>
 //#include <stdafx.h>
 //#include <io.h>
 #include <fcntl.h>
 //#include <complex.h>
 //#include <limits.h>
 //#include <math.h>
+#include <unistd.h>
+#include <utime.h>
 
 #define FALSE 0
 #define TRUE 1
 
 
-char * getDate() 
+char *getDate() 
 {
-    char *date = malloc(9);
+    char *date = malloc(120);
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
-    sprintf(date, "%d%02d%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
+    sprintf(date, "%4d%02d%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
     return date;         
 }
-char * getTime()
+char *getTime()
 {
-    char *currenttime = malloc(9);
+    char *currenttime = malloc(120);
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     sprintf(currenttime, "%02d%02d", tm.tm_hour, tm.tm_min);
@@ -39,9 +42,33 @@ int getMinute()
     struct tm tm = *localtime(&t);
     return tm.tm_min;
 }  
+int checkFile(char *file)
+{
+  //chick if file exists or create it
+  if ( access(file, F_OK) != 0)
+  {	 
+    int fd;
+    fd = creat(file,S_IWUSR | S_IWGRP | S_IWOTH);
+    close(fd);
+    printf("created watchdog file\n");
+  }
+}
+int updateFile(char *file)
+{
+  //update timestamp of file
+
+  struct utimbuf new_times;
+  new_times.modtime = time(NULL);
+  new_times.actime = time(NULL);
+  printf("updated watchdog\n ");
+  if (utime(file, &new_times) < 0) 
+    perror("update watchdogfile failed \n");
+}
 
 int main( int argc, char *argv[]) 
 {
+    char watchdogFile[400];
+    int watchdog=0;
     char outputFolder[400];
     char outputFolderDay[500];
     char outputFile[600];
@@ -49,8 +76,18 @@ int main( int argc, char *argv[])
     char oldMinute = 255;
     char debug = FALSE;
 
-    char rbuf[4096];
-    size_t r;
+    char rbuf[1024];//4096 maybe not possible with select
+    fd_set set;
+    struct timeval timeout;
+    int rv, rvb;
+    //int filedesc = open("/dev/stdin", O_RDWR );
+    int filedesc = open("/dev/stdin", O_RDWR & ~O_NONBLOCK );
+  
+    //FD_ZERO(&set);
+    //FD_SET(filedesc, &set);
+    timeout.tv_sec = 10;
+    timeout.tv_usec = 10000;
+  
 
     //parse arguments
     int argc_cnt;
@@ -63,11 +100,17 @@ int main( int argc, char *argv[])
         {
             strcpy(outputFolder,argv[argc_cnt+1]);
         }
-        else if ((strcmp(argv[argc_cnt], "--help") == 0))
+        if ((strcmp(argv[argc_cnt], "-w") == 0) && (argc > argc_cnt))
+        {
+            strcpy(watchdogFile,argv[argc_cnt+1]);
+	    watchdog = 1;
+        }
+	if ((strcmp(argv[argc_cnt], "--help") == 0))
         {
             printf("tool for recording I/Q data\n\n");
             printf("possible parameters:\n");
             printf("-o <output folder>      /save/sdr\n");
+            printf("-w <watchdog file>      /tmp/20m\n");
             printf("  saves files to <date>/<minute> file structure");
             printf("\nversion 0.2 build 202009\n");
             return 0;
@@ -83,12 +126,12 @@ int main( int argc, char *argv[])
     }   
 
 
-    freopen(NULL, "rb", stdin);
+    //freopen(NULL, "rb", filedesc);
     //_setmode(fileno(stdin), _O_BINARY);
 
     while(1) 
     {
-        //if new minute close file
+	//if new minute close file
         if ((oldMinute != getMinute()) && (outputFileH != NULL))
         {
             oldMinute = getMinute();
@@ -96,7 +139,12 @@ int main( int argc, char *argv[])
             fcloseall();
             fcloseall();
             outputFileH = NULL;
-        }
+            if(watchdog)
+	    {
+	      checkFile(watchdogFile);
+              updateFile(watchdogFile);
+            }
+	}
 
         //if no file opened
         if (outputFileH == NULL)
@@ -114,39 +162,60 @@ int main( int argc, char *argv[])
             sprintf(outputFile, "%s%s", outputFolderDay, outputTime);
             printf("outputFile %s\n",outputFile);
             outputFileH = fopen(outputFile,"a+");
+	    free(day);
+	    free(day_dir);
+	    free(outputTime);
         }
 
-        // ====== input samples (I and Q) from stdin ===
-        //int input_i = getchar(); 
-        //int input_q = getchar();
-
-        //fputc(input_i, outputFileH);
-        //fputc(input_q, outputFileH);
-        
-        r = fread(rbuf, 1, sizeof(rbuf), stdin);
-        if (r > 0)
+        timeout.tv_sec = 10;
+        timeout.tv_usec = 10000;
+  
+        FD_ZERO(&set);
+        FD_SET(filedesc, &set);
+        rv=select(filedesc + 1, &set, NULL, NULL, &timeout);
+        //select(1, &set, NULL, NULL, &timeout);
+	if(rv == -1)
         {
-            size_t w;
-            for (size_t nleft = r; nleft > 0; )
-            {
-                w = fwrite(rbuf, 1, nleft, outputFileH);
-                if (w == 0)
-                {
-                    printf("error: unable to write %s\n", outputFile);
-                    exit(1);
-                }
-                nleft -= w;
-                fflush(outputFileH);
-            }
-        }
- 
-
-
-        if (feof(stdin)) 
-        {
+            perror("select\n"); /// an error accured 
             fclose(outputFileH);
-            return 1;
+            fcloseall();
+            fcloseall();
+	    close(filedesc);
+	    return 0;
+	    //close(filedesc);
         }
+       	else if(rv == 0)
+        {
+            printf("timeout\n"); /// a timeout occured 
+            fclose(outputFileH);
+            fcloseall();
+            fcloseall();
+	    close(filedesc);
+	    return 0;
+	    //close(filedesc);
+        }  /*  
+        else    
+	{*/
+        if(FD_ISSET(filedesc, &set))
+	{
+            rvb=read(filedesc, rbuf, sizeof(rbuf)); /* there was data to read */
+            //rvb= fread(rbuf, 1 , sizeof(rbuf), filedesc);
+	    if (rvb > 0)
+            {
+	        size_t w;
+                for (size_t nleft = rvb; nleft > 0; )
+                {
+                    w = fwrite(rbuf, 1, nleft, outputFileH);
+		    if (w == 0)
+		    {
+                        printf("error: unable to write %s\n", outputFile);
+                        exit(1);
+                    }
+	            nleft -= w;
+                    fflush(outputFileH);
+                }
+            }
+        }			       
     }
 } 
 

@@ -1,8 +1,8 @@
 <?
 session_start();
-$ts= $_GET['t'];
-$day= $_GET['d'];
-$b= $_GET['b'];
+$ts= $_GET['t']; //time
+$day= $_GET['d']; //day
+$b= $_GET['b']; //band
 
 require('function.php'); 
 
@@ -40,63 +40,63 @@ ignore_user_abort(true);
 $ports= array(7070, 7071, 7072, 7073, 7074, 7075, 7076, 7077, 7078, 7079, 7080, 7081, 7082, 7083, 7084);
 $r= null;
 foreach ($ports as $port) {
-  $connection = @fsockopen('127.0.0.1', $port);
+  $connection = @fsockopen('127.0.0.1', $port, $ferrorcode, $ferrormsg, 0.1);
   if (is_resource($connection) == FALSE) { 
 	 #openwebrx_save.py -d 20201110 -ts 1700 -p 7073 
     $r= shell_exec('cd  /opt/save/openwebrx_file/ && python2 openwebrx_save.py -b '.$band.' -s '.$samplingrate.' -c '.$center.' -d '.$day.' -ts '.$ts.' -p '.$port.' > /dev/null 2>/dev/null & echo $!');
-    //printf('cd  /opt/save/openwebrx_file/ && python2 openwebrx_save.py -b '.$band.' -s '.$samplingrate.' -c '.$center.' -d '.$day.' -ts '.$ts.' -p '.$port.' > /dev/null 2>/dev/null & echo $!');
-    //$r= shell_exec('cd  /opt/save/openwebrx_file3/ && python3 openwebrx_save.py -d '.$day.' -ts '.$ts.' -p '.$port.' > /dev/null 2>/dev/null & echo $!');
     $r= trim($r);
     $session="";
     switch ($port) {
       case 7070:
-        $session="save1";
+        $session="savekw1";
 	break;
       case 7071:
-        $session="save2";
+        $session="savekw2";
         break;
       case 7072:
-        $session="save3";
+        $session="savekw3";
         break;
       case 7073:
-        $session="save4";
+        $session="savekw4";
         break;
       case 7074:
-        $session="save5";
+        $session="savekw5";
         break;
       case 7075:
-        $session="save6";
+        $session="savekw6";
         break;
       case 7076:
-        $session="save7";
+        $session="savekw7";
         break;
       case 7077:
-        $session="save8";
+        $session="savekw8";
         break;
       case 7078:
-        $session="save9";
+        $session="savekw9";
         break;
       case 7079:
-        $session="save10";
+        $session="savekw10";
         break;
       case 7080:
-        $session="save11";
+        $session="savekw11";
         break;
       case 7081:
-        $session="save12";
+        $session="savekw12";
         break;
       case 7082:
-        $session="save13";
+        $session="savekw13";
         break;
       case 7083:
-        $session="save14";
+        $session="savekw14";
         break;
       case 7084:
-        $session="save15";
+        $session="savekw15";
         break;
       default:
         $session="full";
     }
+    //wait for session started
+    usleep(200000);
     echo "session:".$session."\n";
     $_SESSION['open']=$session;
     echo $port." found";
@@ -109,8 +109,6 @@ foreach ($ports as $port) {
 }
 
 echo "\npid ".$r;
-//ob_flush();
-//flush();
 //start owx with port, day time and get pid
 //python openwebrx_save.py -d 20200930 -ts 1515 -p 7073 &> /dev/null & echo $!
 
@@ -120,9 +118,13 @@ echo str_repeat(' ',1024*64);
 $cnt= 0;
 while (true) {
   echo "running....\n";	
-  if ((connection_status() != 0) || ($cnt > 600) || connection_aborted()) {
+  #kill after 22 minutes
+  if ((connection_status() != 0) || ($cnt > 1320) || connection_aborted()) {
     echo "dead \n";	  
-    shell_exec('kill -9 '.$r);
+    #shell_exec('kill -9 '.$r);
+    shell_exec('/opt/save/kill.sh '.$r);
+    //https://www.wikitechy.com/tutorials/linux/best-way-to-kill-all-child-processes-in-linux
+    //pkill -TERM -P 27888
     die();
   }	
   sleep(1);
