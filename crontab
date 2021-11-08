@@ -1,2 +1,3 @@
-0 * * * * rccw /opt/save/cleanup.sh                                                                                                  
-*/5  *  *  *  *  rccw /opt/save/waterfall_2.sh 80m 0.3 17
+0 * * * * rccw /opt/save/cleanup.sh       
+# waterfall.sh <band> <bandwidth> <gain>
+*/5  *  *  *  *  rccw /opt/save/waterfall.sh 80m 0.3 17
