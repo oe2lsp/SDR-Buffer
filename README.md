@@ -66,17 +66,17 @@ keeping the whole project in sub directories of an website to keep entrypoint co
 
 other tools, scrips developed for this project are published under [GNU GPLv3]
 
-## geting started
-several files needs to be adopted for each band  
+## getting started
+several files need to be adopted for each band  
 look for "80m" as reference
  
+- crontab
+- opt/save/cleanup.sh
 - opt/save/start80m.sh
+- opt/save/start.sh
 - opt/save/watchdog.sh
 - opt/save/www/index.php
 - opt/save/www/function.php
-- opt/save/start.sh
-- opt/save/cleanup.sh
-- crontab
 
 ## TODO:
 - documentation of used ports
