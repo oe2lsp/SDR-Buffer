@@ -1,0 +1,10 @@
+#2022 03 02 by OE2LSP
+- mobile css (horizontal and vertical)
+- added touch waterfall shift
+- added keyboard qrg tuning (up/down, left/right, page up/down)
+
+#2022 01 22 by OE2LSP
+- addoped binaries to nmux_s, csdr_s ...
+- changed code, that it runs with >python3.8 
+- added multi-sdr profile (settings array in config_webrx.py
+- trimmed some graphical elements, for cleaner gui

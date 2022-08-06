@@ -39,7 +39,7 @@ input is stdin/pipe
 watchdog creates file and keeps timestamp up to date to detect failures
 
 **building** record buffer: 		
-> gcc record_buffer.c -o record_buffer
+> gcc record_buffer4.c -o record_buffer
 
 ## watchdog.sh
 watches for timestamp of file and kills pipe chain if needed
@@ -67,6 +67,8 @@ keeping the whole project in sub directories of an website to keep entrypoint co
 other tools, scrips developed for this project are published under [GNU GPLv3]
 
 ## getting started
+build and install csdr tools from https://github.com/oe2lsp/csdr (special version for simple_openwebrx, can be installed alonside with other versions of csdr without breaking)
+
 several files need to be adopted for each band  
 look for "80m" as reference
  
@@ -80,6 +82,5 @@ look for "80m" as reference
 
 ## TODO:
 - documentation of used ports
-- migrate openwebrx to new version (maby using rtl_tcp interface) or own owrx connector???
-
+- mayve adding some digi voice in websdr
 **push requests welcome**

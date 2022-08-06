@@ -40,10 +40,12 @@ ignore_user_abort(true);
 $ports= array(7070, 7071, 7072, 7073, 7074, 7075, 7076, 7077, 7078, 7079, 7080, 7081, 7082, 7083, 7084);
 $r= null;
 foreach ($ports as $port) {
+  //echo("portX:".$port."\n");
   $connection = @fsockopen('127.0.0.1', $port, $ferrorcode, $ferrormsg, 0.1);
+  //echo("port:".$port."\n");
   if (is_resource($connection) == FALSE) { 
-	 #openwebrx_save.py -d 20201110 -ts 1700 -p 7073 
-    $r= shell_exec('cd  /opt/save/openwebrx_file/ && python2 openwebrx_save.py -b '.$band.' -s '.$samplingrate.' -c '.$center.' -d '.$day.' -ts '.$ts.' -p '.$port.' > /dev/null 2>/dev/null & echo $!');
+    echo('cd  /opt/save/simple_openwebrx/ && python3 openwebrx.py -b '.$band.' -s '.$samplingrate.' -c '.$center.' -d '.$day.' -ts '.$ts.' -p '.$port.' > /dev/null 2>/dev/null & echo $!');
+    $r= shell_exec('cd  /opt/save/simple_openwebrx/ && python3 openwebrx.py -b '.$band.' -s '.$samplingrate.' -c '.$center.' -d '.$day.' -ts '.$ts.' -p '.$port.' > /dev/null 2>/dev/null & echo $!');
     $r= trim($r);
     $session="";
     switch ($port) {
@@ -96,7 +98,7 @@ foreach ($ports as $port) {
         $session="full";
     }
     //wait for session started
-    usleep(200000);
+    usleep(500000);
     echo "session:".$session."\n";
     $_SESSION['open']=$session;
     echo $port." found";
@@ -109,6 +111,8 @@ foreach ($ports as $port) {
 }
 
 echo "\npid ".$r;
+//ob_flush();
+//flush();
 //start owx with port, day time and get pid
 //python openwebrx_save.py -d 20200930 -ts 1515 -p 7073 &> /dev/null & echo $!
 
