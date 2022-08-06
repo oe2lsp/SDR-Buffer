@@ -78,9 +78,10 @@ look for "80m" as reference
 - opt/save/start.sh
 - opt/save/watchdog.sh
 - opt/save/www/index.php
-- opt/save/www/function.php
+- opt/save/www/function.php	
 
 ## TODO:
 - documentation of used ports
-- mayve adding some digi voice in websdr
+- maybe adding some digi voice in websdr
+
 **push requests welcome**
