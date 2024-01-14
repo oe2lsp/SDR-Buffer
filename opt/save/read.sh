@@ -13,7 +13,7 @@ band=$1
 day=$2
 ts=$3
 
-for line in $(find /var/www/html/$band/$day/* -maxdepth 0  | grep -A 20 $ts |  grep -v out | sort -n); do
+for line in $(find /opt/save/www/$band/$day/* -maxdepth 0  | grep -A 20 $ts |  grep -v out | sort -n); do
   cat $line
   #echo $line
 done
