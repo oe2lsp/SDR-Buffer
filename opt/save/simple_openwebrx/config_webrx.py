@@ -118,7 +118,7 @@ shown_center_freq = [center_freq[0]] #you can change this if you use an upconver
 
 #sdr
 sdr_labels=['file source']
-start_rtl_command.append("/opt/save/read.sh "+band+" "+day+" "+timestamp+" | csdr_old flowcontrol {sr} 20 ".format(sr=samp_rate[0]*2*1.05)) 
+start_rtl_command.append("/opt/save/read.sh "+band+" "+day+" "+timestamp+" | csdr_s flowcontrol {sr} 20 ".format(sr=samp_rate[0]*2*1.05)) 
 ##### END SDR CONFIG ###############
 
 
