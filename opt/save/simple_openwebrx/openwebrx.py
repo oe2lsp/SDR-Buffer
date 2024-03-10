@@ -850,6 +850,7 @@ async def process_request(sever_root, path, request_headers):
                 #    newclientid= ""
                 # if "%[CLIENT_ID]" in data else ""
                 replace_dictionary=(
+                    ("%[VERSION]",sw_version),
                     ("%[RX_PHOTO_DESC]",cfg.photo_desc),
                     ("%[RX_PHOTO_DESC]",cfg.photo_desc),
                     ("%[CLIENT_ID]", generate_client_id(client_address)) if "%[CLIENT_ID]" in data.decode() else "",

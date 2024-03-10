@@ -1,9 +1,16 @@
+#2024 03 10 by OE2LSP
+- improved keyboard interaction (no accidential band change)
+- added support for blocked autoplay in firefox
+
 #2022 03 02 by OE2LSP
 - mobile css (horizontal and vertical)
 - added touch waterfall shift
 - added keyboard qrg tuning (up/down, left/right, page up/down)
-
-#2022 01 22 by OE2LSP
+-   modulation change ("a" / "s")
+-   fullscreen "f"
+-   zoom ("+" / "-")
+ 
+#2022 01 22 by OE2LSP  
 - addoped binaries to nmux_s, csdr_s ...
 - changed code, that it runs with >python3.8 
 - added multi-sdr profile (settings array in config_webrx.py

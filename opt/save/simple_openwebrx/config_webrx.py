@@ -72,7 +72,7 @@ server_hostname="localhost" # If this contains an incorrect value, the web UI ma
 max_clients=20
 
 # ==== Web GUI configuration ====
-receiver_name="start time "+str(day)+" "+str(timestamp)+" stream stops after 20min"
+receiver_name="start time "+str(day)+" "+str(timestamp)+"UTC stream stops after 20min"
 receiver_location="QTH"
 receiver_qra="JN97ML"
 receiver_asl=200
@@ -118,7 +118,7 @@ shown_center_freq = [center_freq[0]] #you can change this if you use an upconver
 
 #sdr
 sdr_labels=['file source']
-start_rtl_command.append("/opt/save/read.sh "+band+" "+day+" "+timestamp+" | csdr_s flowcontrol {sr} 20 ".format(sr=samp_rate[0]*2*1.05)) 
+start_rtl_command.append("/opt/save/read.sh "+band+" "+day+" "+timestamp+" | csdr_old flowcontrol {sr} 20 ".format(sr=samp_rate[0]*2*1.05)) 
 ##### END SDR CONFIG ###############
 
 
@@ -219,7 +219,7 @@ client_audio_buffer_size = 5
 start_freq = center_freq
 start_mod = "nfm" #nfm, am, lsb, usb, cw
 
-iq_server_port = 4951 #TCP port for ncat to listen on. It will send I/Q data over its connections, for internal use in OpenWebRX. It is only accessible from the localhost by default.
+iq_server_port = port+100 #TCP port for ncat to listen on. It will send I/Q data over its connections, for internal use in OpenWebRX. It is only accessible from the localhost by default.
 
 #access_log = "~/openwebrx_access.log"
 

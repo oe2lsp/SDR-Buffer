@@ -11357,7 +11357,6 @@ function abort(text) {
 
     ABORT = true;
     EXITSTATUS = 1;
-
     throw 'abort() at ' + stackTrace();
 }
 Module['abort'] = Module.abort = abort;

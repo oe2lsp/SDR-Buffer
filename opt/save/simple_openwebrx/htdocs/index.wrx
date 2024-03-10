@@ -28,36 +28,39 @@
             var ws_url="%[WS_URL]";
             var rx_photo_height=%[RX_PHOTO_HEIGHT];
             var audio_buffering_fill_to=%[AUDIO_BUFSIZE];
-			var starting_mod="%[START_MOD]";
+            var starting_mod="%[START_MOD]";
             var starting_offset_frequency = %[START_OFFSET_FREQ];
             var waterfall_colors=%[WATERFALL_COLORS];
             var waterfall_min_level_default=%[WATERFALL_MIN_LEVEL];
             var waterfall_max_level_default=%[WATERFALL_MAX_LEVEL];
             var waterfall_auto_level_margin=%[WATERFALL_AUTO_LEVEL_MARGIN];
             var server_enable_digimodes=%[DIGIMODES_ENABLE];
-			var mathbox_waterfall_frequency_resolution=%[MATHBOX_WATERFALL_FRES];
-			var mathbox_waterfall_history_length=%[MATHBOX_WATERFALL_THIST];
-			var mathbox_waterfall_colors=%[MATHBOX_WATERFALL_COLORS];
+            var mathbox_waterfall_frequency_resolution=%[MATHBOX_WATERFALL_FRES];
+            var mathbox_waterfall_history_length=%[MATHBOX_WATERFALL_THIST];
+            var mathbox_waterfall_colors=%[MATHBOX_WATERFALL_COLORS];
             var sdr_labels=%[SDR_LABELS];
+	    var version="%[VERSION]";
         </script>
         %[HTML_HEAD]
         <script src="sdr.js"></script>
-		<script src="mathbox-bundle.min.js"></script>
-        <script src="openwebrx.js"></script>
-        <script src="jquery-3.2.1.min.js"></script>
-        <script src="jquery.nanoscroller.js"></script>
-        <link rel="stylesheet" type="text/css" href="nanoscroller.css" />
-        <link rel="stylesheet" type="text/css" href="openwebrx.css" />
+        <script src="mathbox-bundle.min.js?%[VERSION]"></script>
+        <script src="openwebrx.js?%[VERSION]"></script>
+        <script src="jquery-3.2.1.min.js?%[VERSION]"></script>
+        <script src="jquery.nanoscroller.js?%[VERSION]"></script>
+        <link rel="stylesheet" type="text/css" href="nanoscroller.css?%[VERSION]" />
+        <link rel="stylesheet" type="text/css" href="openwebrx.css?%[VERSION]" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta charset="utf-8">
+        <meta http-equiv="Cache-control" content="public"> 
+	<meta http-equiv="Cache-control" content="Cache-Control: max-age=2592000"> 
     </head>
     <body onload="openwebrx_init();">
 <div id="webrx-page-container">
     <div id="webrx-top-container">
         <div id="webrx-top-photo-clip">
             <img src="gfx/openwebrx-top-photo.png" id="webrx-top-photo"/>
+		<div id="webrx-rx-photo-desc">%[RX_PHOTO_DESC]<!--<br /> Loc: %[RX_QRA], ASL: %[RX_ASL] m-->
 	        <div id="webrx-rx-photo-title">%[RX_PHOTO_TITLE]</div>
-                <div id="webrx-rx-photo-desc">%[RX_PHOTO_DESC]<br /> Loc: %[RX_QRA], ASL: %[RX_ASL] m
 </div>
         </div>
         <div id="webrx-top-bar-background" class="webrx-top-bar-parts"></div>
